@@ -552,7 +552,13 @@
 				// Shift+Enter: 插入换行,保持默认行为
 			} else {
 				e.preventDefault()
-				send()
+				const content = document.getElementById('serial-send-content').value
+				if (content) {
+					send()
+				} else {
+					// 输入框为空时按Enter,发送回车换行(不重复追加CRLF)
+					sendText('\r\n', true)
+				}
 			}
 		}
 	})
@@ -707,20 +713,20 @@
 		}
 	}
 
-	//发送文本到串口
-	async function sendText(text) {
+	//发送文本到串口, skipAddCRLF为true时不追加回车换行(用于单独发送换行时)
+	async function sendText(text, skipAddCRLF = false) {
 		const encoder = new TextEncoder()
-		writeData(encoder.encode(text))
+		writeData(encoder.encode(text), skipAddCRLF)
 	}
 
 	//写串口数据
-	async function writeData(data) {
+	async function writeData(data, skipAddCRLF = false) {
 		if (!serialPort || !serialPort.writable) {
 			addLogErr('请先打开串口再发送数据')
 			return
 		}
 		const writer = serialPort.writable.getWriter()
-		if (toolOptions.addCRLF) {
+		if (!skipAddCRLF && toolOptions.addCRLF) {
 			data = new Uint8Array([...data, 0x0d, 0x0a])
 		}
 		await writer.write(data)
