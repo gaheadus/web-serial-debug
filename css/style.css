@@ -135,3 +135,10 @@ body {
 	font-size: 0.8rem;
 	font-weight: 600;
 }
+.serial-log-options {
+	background-color: #e9ecef;
+	border-color: #ced4da !important;
+}
+.serial-log-options .input-group-text {
+	background-color: #dee2e6;
+}

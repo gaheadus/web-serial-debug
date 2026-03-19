@@ -140,6 +140,23 @@
                     </div>
                 </div>
 
+                <div class="serial-log-options mt-2 pt-2 pb-2 px-2 border rounded">
+                    <div class="small text-secondary mb-1 fw-semibold">日志选项</div>
+                    <div class="input-group input-group-sm mb-2">
+                        <span class="input-group-text">分包超时</span>
+                        <input type="number" id="serial-timer-out" class="form-control" placeholder="0不分包" value="50" />
+                    </div>
+                    <div class="input-group input-group-sm">
+                        <span class="input-group-text">日志类型</span>
+                        <select class="form-select" id="serial-log-type">
+                            <Option value="hex&text">Hex和Text</Option>
+                            <Option value="hex">Hex</Option>
+                            <Option value="text">Text</Option>
+                            <Option value="ansi">彩色Ansi</Option>
+                        </select>
+                    </div>
+                </div>
+
                 <div class="mt-2 pt-2 border-top">
                     <div class="form-check mb-1">
                         <input class="form-check-input" type="checkbox" id="serial-add-crlf">
@@ -174,22 +191,6 @@
                 <h1 class="h6 mb-0" id="serial-log-title">未连接</h1>
 
                 <div class="btn-toolbar">
-                    <div class="input-group input-group-sm me-2">
-                        <span class="input-group-text">分包超时</span>
-                        <input type="number" id="serial-timer-out" class="form-control" placeholder="0不分包" value="50"
-                            style="width: 100px;" />
-                    </div>
-
-                    <div class="input-group input-group-sm me-2">
-                        <span class="input-group-text">日志类型</span>
-                        <select class="form-select" id="serial-log-type" style="width: 120px;">
-                            <Option value="hex&text">Hex和Text</Option>
-                            <Option value="hex">Hex</Option>
-                            <Option value="text">Text</Option>
-                            <Option value="ansi">彩色Ansi</Option>
-                        </select>
-                    </div>
-
                     <div class="btn-group">
                         <button class="btn btn-sm btn-outline-secondary" id="serial-auto-scroll">自动滚动</button>
                         <button class="btn btn-sm btn-outline-secondary" id="serial-clear">清空</button>
