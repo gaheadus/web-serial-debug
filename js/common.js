@@ -707,7 +707,7 @@
 	async function send() {
 		let content = document.getElementById('serial-send-content').value
 		if (!content) {
-			addLogErr('发送内容为空')
+			sendText('\r\n', true)
 			return
 		}
 		if (toolOptions.hexSend) {
