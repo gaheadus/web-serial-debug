@@ -545,6 +545,17 @@
 	document.getElementById('serial-send').addEventListener('click', (e) => {
 		send()
 	})
+	// Enter发送, Shift+Enter换行
+	document.getElementById('serial-send-content').addEventListener('keydown', (e) => {
+		if (e.key === 'Enter') {
+			if (e.shiftKey) {
+				// Shift+Enter: 插入换行,保持默认行为
+			} else {
+				e.preventDefault()
+				send()
+			}
+		}
+	})
 
 	const serialToggle = document.getElementById('serial-open-or-close')
 	const serialLogs = document.getElementById('serial-logs')
