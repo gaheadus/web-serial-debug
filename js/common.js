@@ -139,6 +139,8 @@
 		sendContent: '',
 		//快捷发送选中索引
 		quickSendIndex: 0,
+		//发送框是否显示
+		sendBoxVisible: true,
 	}
 
 	//生成快捷发送列表
@@ -444,6 +446,16 @@
 	quickSend.value = toolOptions.quickSendIndex
 	quickSend.dispatchEvent(new Event('change'))
 	resetLoopSend()
+	//恢复发送框显示状态
+	const serialSendArea = document.getElementById('serial-send-area')
+	const serialToggleSend = document.getElementById('serial-toggle-send')
+	if (toolOptions.sendBoxVisible !== false) {
+		serialSendArea.classList.add('show')
+		serialToggleSend.innerHTML = '<i class="bi bi-chevron-double-down"></i> 发送框'
+	} else {
+		serialSendArea.classList.remove('show')
+		serialToggleSend.innerHTML = '<i class="bi bi-chevron-double-up"></i> 发送框'
+	}
 
 	//实时修改选项
 	document.getElementById('serial-timer-out').addEventListener('change', (e) => {
@@ -461,6 +473,11 @@
 		let autoScroll = this.innerText != '自动滚动'
 		this.innerText = autoScroll ? '自动滚动' : '暂停滚动'
 		changeOption('autoScroll', autoScroll)
+	})
+	document.getElementById('serial-toggle-send').addEventListener('click', function (e) {
+		const sendBoxVisible = !serialSendArea.classList.toggle('show')
+		changeOption('sendBoxVisible', sendBoxVisible)
+		this.innerHTML = sendBoxVisible ? '<i class="bi bi-chevron-double-down"></i> 发送框' : '<i class="bi bi-chevron-double-up"></i> 发送框'
 	})
 	document.getElementById('serial-send-content').addEventListener('change', function (e) {
 		changeOption('sendContent', this.value)
