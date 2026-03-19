@@ -179,11 +179,11 @@
                 </div>
             </div>
             <div id="serial-logs" class="flex-grow-1 border border-2 rounded mb-2"></div>
-            <div id="serial-send-area" class="collapse flex-shrink-0 mb-2">
-                <textarea class="form-control" rows="3" id="serial-send-content" style="resize: none;"
+            <div id="serial-send-area" class="collapse flex-shrink-0">
+                <textarea class="form-control" id="serial-send-content" style="resize: none;"
                     placeholder="在此输入要发送的内容,可以是字符串(如:你好,世界!),也可以是HEX(如:49544c4447)。Enter发送, Shift+Enter换行"></textarea>
                 <div
-                    class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-1 pb-1 mb-1 flex-shrink-0">
+                    class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-1 pb-1 flex-shrink-0">
                     <div class="btn-toolbar">
                         <div class="form-check align-self-center me-2">
                             <input class="form-check-input" type="checkbox" id="serial-add-crlf">
@@ -209,7 +209,7 @@
                                 value="1000" style="width: 100px;" />
                         </div>
                     </div>
-                    <button id="serial-send" class="btn btn-primary h-10 px-5"><i class="bi bi-send"></i>
+                    <button id="serial-send" class="btn btn-primary btn-sm px-3"><i class="bi bi-send"></i>
                         发送</button>
                 </div>
             </div>
