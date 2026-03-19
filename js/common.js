@@ -565,6 +565,19 @@
 
 	const serialToggle = document.getElementById('serial-open-or-close')
 	const serialLogs = document.getElementById('serial-logs')
+	const serialAutoScrollBtn = document.getElementById('serial-auto-scroll')
+
+	// 用户滚轮往上查看历史log时,自动暂停滚动,需点击按钮恢复
+	serialLogs.addEventListener('scroll', function (e) {
+		if (!toolOptions.autoScroll) return
+		const { scrollTop, scrollHeight, clientHeight } = this
+		const isAtBottom = scrollHeight - scrollTop - clientHeight < 5
+		if (!isAtBottom) {
+			toolOptions.autoScroll = false
+			changeOption('autoScroll', false)
+			serialAutoScrollBtn.innerText = '暂停滚动'
+		}
+	})
 
 	//选择串口
 	document.getElementById('serial-select-port').addEventListener('click', async () => {
