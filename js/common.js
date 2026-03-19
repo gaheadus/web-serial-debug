@@ -707,6 +707,14 @@
 			titleEl.textContent = '串口已连接'
 		}
 	}
+	// 发送到串口后切换为自动滚动并滚动到底部(主发送栏、快捷发送、代码脚本等所有发送方式共用)
+	function scrollToBottomAfterSend() {
+		toolOptions.autoScroll = true
+		changeOption('autoScroll', true)
+		serialAutoScrollBtn.innerText = '自动滚动'
+		serialLogs.scrollTop = serialLogs.scrollHeight - serialLogs.clientHeight
+	}
+
 	//串口数据收发
 	async function send() {
 		let content = document.getElementById('serial-send-content').value
@@ -717,11 +725,6 @@
 		} else {
 			await sendText(content)
 		}
-		// 发送后立即切换为自动滚动并滚动到底部
-		toolOptions.autoScroll = true
-		changeOption('autoScroll', true)
-		serialAutoScrollBtn.innerText = '自动滚动'
-		serialLogs.scrollTop = serialLogs.scrollHeight - serialLogs.clientHeight
 	}
 
 	//发送HEX到串口
@@ -757,6 +760,7 @@
 		await writer.write(data)
 		writer.releaseLock()
 		addLog(data, false)
+		scrollToBottomAfterSend()
 	}
 
 	//读串口数据
