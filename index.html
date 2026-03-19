@@ -55,8 +55,8 @@
     <div id="main" class="d-flex">
         <!--左侧串口配置-->
         <div id="serial-options" class="col-auto m-0 bg-light sidebar">
-            <div class="collapse show p-2 float-start">
-                <div class="input-group mb-3">
+            <div class="collapse show p-1 float-start">
+                <div class="input-group mb-2">
                     <span class="input-group-text">波特率</span>
                     <input type="number" id="serial-baud" class="form-control" placeholder="选择波特率" value="115200"
                         list="baud-list">
@@ -82,7 +82,7 @@
                     </datalist>
                 </div>
 
-                <div class="input-group mb-3">
+                <div class="input-group mb-2">
                     <span class="input-group-text">数据位</span>
                     <select class="form-select" id="serial-data-bits">
                         <option>8</option>
@@ -90,7 +90,7 @@
                     </select>
                 </div>
 
-                <div class="input-group mb-3">
+                <div class="input-group mb-2">
                     <span class="input-group-text">停止位</span>
                     <select class="form-select" id="serial-stop-bits">
                         <option>1</option>
@@ -98,7 +98,7 @@
                     </select>
                 </div>
 
-                <div class="input-group mb-3">
+                <div class="input-group mb-2">
                     <span class="input-group-text">校验位</span>
                     <select class="form-select" id="serial-parity">
                         <Option value="none">None</Option>
@@ -107,7 +107,7 @@
                     </select>
                 </div>
 
-                <div class="input-group mb-3">
+                <div class="input-group mb-2">
                     <span class="input-group-text">缓冲区</span>
                     <input type="number" id="serial-buffer-size" class="form-control" placeholder="缓冲区大小"
                         list="buffer-size-list" max="1677216" value="1024">
@@ -121,7 +121,7 @@
                     </datalist>
                 </div>
 
-                <div class="input-group mb-3">
+                <div class="input-group mb-2">
                     <span class="input-group-text">流控制</span>
                     <select class="form-select" id="serial-flow-control">
                         <Option value="none">None</Option>
@@ -221,7 +221,7 @@
             <button class="toggle-button float-start" title="隐藏/打开边栏">
                 <i class="bi bi-chevron-compact-right"></i>
             </button>
-            <div class="collapse show p-1 float-start overflow-hidden" style="width:428px">
+            <div class="collapse show p-1 float-start overflow-hidden">
 
                 <nav>
                     <div class="nav nav-tabs" id="nav-tab" role="tablist">

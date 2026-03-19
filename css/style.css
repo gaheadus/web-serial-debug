@@ -29,6 +29,33 @@ body {
 #serial-options,
 #serial-tools {
 	position: relative;
+	font-size: 0.75rem;
+}
+#serial-options .input-group,
+#serial-options .btn,
+#serial-options .alert,
+#serial-tools .input-group,
+#serial-tools .btn,
+#serial-tools .nav-link,
+#serial-tools h5 {
+	font-size: 0.75rem;
+}
+#serial-options .input-group-text,
+#serial-tools .input-group-text {
+	padding: 0.2rem 0.4rem;
+}
+#serial-options .form-control,
+#serial-options .form-select,
+#serial-tools .form-control,
+#serial-tools .form-select {
+	font-size: 0.75rem;
+	padding: 0.2rem 0.4rem;
+}
+#serial-options .collapse.show {
+	max-width: 180px;
+}
+#serial-tools .collapse.show {
+	width: 320px !important;
 }
 .toggle-button {
 	align-items: center;
@@ -36,10 +63,10 @@ body {
 	border: 0;
 	display: flex;
 	flex: none;
-	font-size: 20px;
+	font-size: 14px;
 	height: 100%;
 	justify-content: center;
-	width: 20px;
+	width: 16px;
 	z-index: 1;
 	background-color: #f8f9fa;
 }
