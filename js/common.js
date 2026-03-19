@@ -552,13 +552,7 @@
 				// Shift+Enter: 插入换行,保持默认行为
 			} else {
 				e.preventDefault()
-				const content = document.getElementById('serial-send-content').value
-				if (content) {
-					send()
-				} else {
-					// 输入框为空时按Enter,发送回车换行(不重复追加CRLF)
-					sendText('\r\n', true)
-				}
+				send()
 			}
 		}
 	})
@@ -707,14 +701,17 @@
 	async function send() {
 		let content = document.getElementById('serial-send-content').value
 		if (!content) {
-			sendText('\r\n', true)
-			return
-		}
-		if (toolOptions.hexSend) {
+			await sendText('\r\n', true)
+		} else if (toolOptions.hexSend) {
 			await sendHex(content)
 		} else {
 			await sendText(content)
 		}
+		// 发送后立即切换为自动滚动并滚动到底部
+		toolOptions.autoScroll = true
+		changeOption('autoScroll', true)
+		serialAutoScrollBtn.innerText = '自动滚动'
+		serialLogs.scrollTop = serialLogs.scrollHeight - serialLogs.clientHeight
 	}
 
 	//发送HEX到串口
@@ -734,7 +731,7 @@
 	//发送文本到串口, skipAddCRLF为true时不追加回车换行(用于单独发送换行时)
 	async function sendText(text, skipAddCRLF = false) {
 		const encoder = new TextEncoder()
-		writeData(encoder.encode(text), skipAddCRLF)
+		return writeData(encoder.encode(text), skipAddCRLF)
 	}
 
 	//写串口数据
