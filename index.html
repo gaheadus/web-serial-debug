@@ -179,7 +179,6 @@
                         <input type="number" id="serial-loop-send-time" class="form-control" placeholder="" min="1"
                             value="1000" />
                     </div>
-                    <button id="serial-send" class="btn btn-primary btn-sm w-100"><i class="bi bi-send"></i> 发送</button>
                 </div>
             </div>
             <button class="toggle-button float-end" title="隐藏/打开边栏">
@@ -207,9 +206,10 @@
             <div id="serial-send-wrapper" class="flex-shrink-0 d-flex flex-column">
                 <button class="toggle-button-send" title="隐藏/显示发送框"><i class="bi bi-chevron-compact-up"></i></button>
                 <div id="serial-send-area" class="collapse flex-shrink-0">
-                <div class="py-1">
-                    <textarea class="form-control w-100" id="serial-send-content" style="resize: none;"
+                <div class="py-1 d-flex gap-2 align-items-start">
+                    <textarea class="form-control flex-grow-1" id="serial-send-content" style="resize: none;"
                         placeholder="在此输入要发送的内容,可以是字符串(如:你好,世界!),也可以是HEX(如:49544c4447)。Enter发送, Shift+Enter换行"></textarea>
+                    <button id="serial-send" class="btn btn-primary btn-sm flex-shrink-0"><i class="bi bi-send"></i> 发送</button>
                 </div>
                 </div>
             </div>
