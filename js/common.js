@@ -857,9 +857,28 @@
 	}
 
 	//保存文本
+	let lastExportTime = 0
+	let lastExportCount = 0
 	function saveText(text) {
+		const now = new Date()
+		const y = now.getFullYear()
+		const m = String(now.getMonth() + 1).padStart(2, '0')
+		const d = String(now.getDate()).padStart(2, '0')
+		const h = String(now.getHours()).padStart(2, '0')
+		const min = String(now.getMinutes()).padStart(2, '0')
+		const s = String(now.getSeconds()).padStart(2, '0')
+		const ms = now.getTime()
+		const sameSecond = Math.floor(ms / 1000) === Math.floor(lastExportTime / 1000)
+		lastExportTime = ms
+		if (sameSecond) {
+			lastExportCount++
+		} else {
+			lastExportCount = 0
+		}
+		const xx = String(lastExportCount).padStart(2, '0')
+		const filename = `serial_${y}_${m}_${d}_${h}_${min}_${s}_${xx}.log`
 		let blob = new Blob([text], { type: 'text/plain;charset=utf-8' })
-		saveAs(blob, 'serial.log')
+		saveAs(blob, filename)
 	}
 
 	//下载文件
