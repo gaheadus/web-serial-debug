@@ -139,6 +139,27 @@
                         未选择串口
                     </div>
                 </div>
+
+                <div class="mt-2 pt-2 border-top">
+                    <div class="form-check mb-1">
+                        <input class="form-check-input" type="checkbox" id="serial-add-crlf">
+                        <label class="form-check-label" for="serial-add-crlf">末尾加回车换行</label>
+                    </div>
+                    <div class="form-check mb-1">
+                        <input class="form-check-input" type="checkbox" id="serial-hex-send">
+                        <label class="form-check-label" for="serial-hex-send">HEX发送</label>
+                    </div>
+                    <div class="form-check mb-1">
+                        <input class="form-check-input" type="checkbox" id="serial-loop-send">
+                        <label class="form-check-label" for="serial-loop-send">循环发送</label>
+                    </div>
+                    <div class="input-group input-group-sm mb-2">
+                        <span class="input-group-text">发送间隔(MS)</span>
+                        <input type="number" id="serial-loop-send-time" class="form-control" placeholder="" min="1"
+                            value="1000" />
+                    </div>
+                    <button id="serial-send" class="btn btn-primary btn-sm w-100"><i class="bi bi-send"></i> 发送</button>
+                </div>
             </div>
             <button class="toggle-button float-end" title="隐藏/打开边栏">
                 <i class="bi bi-chevron-compact-left"></i>
@@ -181,37 +202,9 @@
             <div id="serial-send-wrapper" class="flex-shrink-0 d-flex flex-column">
                 <button class="toggle-button-send" title="隐藏/显示发送框"><i class="bi bi-chevron-compact-up"></i></button>
                 <div id="serial-send-area" class="collapse flex-shrink-0">
-                <textarea class="form-control" id="serial-send-content" style="resize: none;"
-                    placeholder="在此输入要发送的内容,可以是字符串(如:你好,世界!),也可以是HEX(如:49544c4447)。Enter发送, Shift+Enter换行"></textarea>
-                <div
-                    class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-1 pb-1 flex-shrink-0">
-                    <div class="btn-toolbar">
-                        <div class="form-check align-self-center me-2">
-                            <input class="form-check-input" type="checkbox" id="serial-add-crlf">
-                            <label class="form-check-label" for="serial-add-crlf">
-                                末尾加回车换行
-                            </label>
-                        </div>
-                        <div class="form-check align-self-center me-2">
-                            <input class="form-check-input" type="checkbox" id="serial-hex-send">
-                            <label class="form-check-label" for="serial-hex-send">
-                                HEX发送
-                            </label>
-                        </div>
-                        <div class="form-check align-self-center me-2">
-                            <input class="form-check-input" type="checkbox" id="serial-loop-send">
-                            <label class="form-check-label" for="serial-loop-send">
-                                循环发送
-                            </label>
-                        </div>
-                        <div class="input-group input-group-sm">
-                            <span class="input-group-text">发送间隔(MS)</span>
-                            <input type="number" id="serial-loop-send-time" class="form-control" placeholder="" min="1"
-                                value="1000" style="width: 100px;" />
-                        </div>
-                        <button id="serial-send" class="btn btn-primary btn-sm px-3 ms-2"><i class="bi bi-send"></i>
-                            发送</button>
-                    </div>
+                <div class="py-1">
+                    <textarea class="form-control w-100" id="serial-send-content" style="resize: none;"
+                        placeholder="在此输入要发送的内容,可以是字符串(如:你好,世界!),也可以是HEX(如:49544c4447)。Enter发送, Shift+Enter换行"></textarea>
                 </div>
                 </div>
             </div>

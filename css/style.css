@@ -54,7 +54,7 @@ body {
 	padding: 0.2rem 0.4rem;
 }
 #serial-options .collapse.show {
-	max-width: 180px;
+	max-width: 220px;
 }
 #serial-tools .collapse.show {
 	width: 320px !important;
