@@ -102,3 +102,21 @@ body {
 	height: 2.5rem;
 	min-height: 2.5rem;
 }
+#log-toolbar {
+	min-height: 1.8rem;
+}
+#log-toolbar .input-group-sm .form-control,
+#log-toolbar .input-group-sm .form-select,
+#log-toolbar .input-group-sm .input-group-text {
+	font-size: 0.875rem;
+	padding: 0.2rem 0.4rem;
+	line-height: 1.4;
+}
+#log-toolbar .btn-sm {
+	font-size: 0.875rem;
+	padding: 0.25rem 0.5rem;
+}
+#serial-log-title {
+	font-size: 0.8rem;
+	font-weight: 600;
+}
