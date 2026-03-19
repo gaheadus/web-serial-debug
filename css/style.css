@@ -162,3 +162,12 @@ body {
 .serial-send-options .input-group-text {
 	background-color: #dee2e6;
 }
+.quick-remove {
+	padding: 0.15rem 0.35rem !important;
+	font-size: 0.75rem !important;
+	line-height: 1;
+}
+.quick-item .form-check-input {
+	width: 1.15em;
+	height: 1.15em;
+}

@@ -242,10 +242,10 @@
 	})
 	function getQuickItemHtml(item) {
 		return `<div class="d-flex p-1 border-bottom quick-item">
-			<button type="button" title="移除该项" class="btn btn-sm btn-outline-secondary me-1 quick-remove"><i class="bi bi-x"></i></button>
+			<button class="flex-shrink-0 me-1 align-self-center btn btn-secondary btn-sm quick-send" title="${item.name}">${item.name}</button>
 			<input class="form-control form-control-sm me-1" placeholder="要发送的内容,双击改名" value="${item.content}">
-			<button class="flex-shrink-0 me-1 align-self-center btn btn-secondary btn-sm  quick-send" title="${item.name}">${item.name}</button>
-			<input class="form-check-input flex-shrink-0 align-self-center" type="checkbox" ${item.hex ? 'checked' : ''}>
+			<input class="form-check-input flex-shrink-0 align-self-center me-1" type="checkbox" ${item.hex ? 'checked' : ''}>
+			<button type="button" title="移除该项" class="btn btn-sm btn-outline-secondary quick-remove"><i class="bi bi-x"></i></button>
 		</div>`
 	}
 	//快捷发送分组新增
