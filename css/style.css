@@ -137,10 +137,6 @@ body {
 	font-size: 0.875rem;
 	padding: 0.25rem 0.5rem;
 }
-#serial-log-title {
-	font-size: 0.8rem;
-	font-weight: 600;
-}
 .serial-port-params {
 	background-color: #e9ecef;
 	border-color: #ced4da !important;

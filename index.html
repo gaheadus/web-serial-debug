@@ -191,8 +191,12 @@
         <div id="log-main" class="flex-fill px-md-2">
             <div id="log-toolbar"
                 class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center py-0 mb-1 flex-shrink-0">
-                <h1 class="h6 mb-0" id="serial-log-title">未连接</h1>
-
+                <div class="btn-toolbar">
+                    <div class="btn-group">
+                        <button type="button" class="btn btn-sm" id="serial-log-open-close">打开串口</button>
+                        <button type="button" class="btn btn-sm btn-outline-secondary" id="serial-log-select-port">选择串口</button>
+                    </div>
+                </div>
                 <div class="btn-toolbar">
                     <div class="btn-group">
                         <button class="btn btn-sm btn-outline-secondary" id="serial-auto-scroll">自动滚动</button>

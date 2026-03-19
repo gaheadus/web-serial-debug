@@ -578,9 +578,8 @@
 		}
 	})
 
-	//选择串口
-	document.getElementById('serial-select-port').addEventListener('click', async () => {
-		// 客户端授权
+	// 选择串口(左侧栏与顶部工具栏共用)
+	async function selectSerialPort() {
 		try {
 			await navigator.serial.requestPort().then(async (port) => {
 				closeSerial()
@@ -591,14 +590,15 @@
 		} catch (e) {
 			console.error('获取串口权限出错' + e.toString())
 		}
-	})
+	}
+	document.getElementById('serial-select-port').addEventListener('click', selectSerialPort)
+	document.getElementById('serial-log-select-port').addEventListener('click', selectSerialPort)
 
 	//关闭串口
 	async function closeSerial() {
 		if (serialOpen) {
 			serialOpen = false
 			reader?.cancel()
-			serialToggle.innerHTML = '打开串口'
 		}
 		updateSerialStatus()
 	}
@@ -617,7 +617,6 @@
 		serialPort
 			.open(SerialOptions)
 			.then(() => {
-				serialToggle.innerHTML = '关闭串口'
 				serialOpen = true
 				serialClose = false
 				localStorage.setItem('serialOptions', JSON.stringify(SerialOptions))
@@ -629,21 +628,22 @@
 			})
 	}
 
-	//打开或关闭串口
-	serialToggle.addEventListener('click', async () => {
+	// 打开或关闭串口的通用处理
+	async function toggleSerialPort() {
 		if (!serialPort) {
 			showMsg('请先选择串口')
 			return
 		}
-
 		if (serialPort.writable && serialPort.readable) {
 			closeSerial()
 			serialClose = true
 			return
 		}
-
 		openSerial()
-	})
+	}
+	serialToggle.addEventListener('click', toggleSerialPort)
+	document.getElementById('serial-log-open-close').addEventListener('click', toggleSerialPort)
+	document.getElementById('serial-log-select-port').addEventListener('click', selectSerialPort)
 
 	//设置读取元素
 	function get(id) {
@@ -689,23 +689,44 @@
 			tip = '<div class="alert alert-warning" role="alert">已选择串口</div>'
 		}
 		el.innerHTML = tip
-		updateLogTitle(serialOpen)
+		updateSerialToggleButtons()
 	}
-	//更新日志区域标题(串口名称或连接状态)
-	async function updateLogTitle(connected) {
-		const titleEl = document.getElementById('serial-log-title')
-		if (!connected || !serialPort) {
-			titleEl.textContent = '未连接'
-			return
-		}
-		try {
-			const info = await serialPort.getInfo()
-			// Chrome/Edge 可能返回 path 属性(非标准),如 "COM3"
-			const portName = info.path || info.portName || (info.usbVendorId && info.usbProductId ? `USB(0x${info.usbVendorId.toString(16)}:0x${info.usbProductId.toString(16)})` : null)
-			titleEl.textContent = portName ? '串口' + portName : '串口已连接'
-		} catch (e) {
-			titleEl.textContent = '串口已连接'
-		}
+	// 更新打开/关闭串口按钮的文案与样式(左侧栏与顶部工具栏同步)
+	function updateSerialToggleButtons() {
+		const logBtn = document.getElementById('serial-log-open-close')
+		const toggleBtns = [
+			{ el: serialToggle, extraClass: 'flex-grow-1' },
+			{ el: logBtn, extraClass: '' }
+		]
+		toggleBtns.forEach(({ el, extraClass }) => {
+			if (!el) return
+			let cls = 'btn btn-sm'
+			if (serialDisconnected) {
+				cls += ' btn-outline-danger'
+			} else if (!serialPort) {
+				cls += ' btn-outline-secondary'
+			} else if (serialOpen) {
+				cls += ' btn-success'
+			} else {
+				cls += ' btn-outline-warning'
+			}
+			if (extraClass) cls += ' ' + extraClass
+			el.className = cls
+			if (serialDisconnected) {
+				el.textContent = '打开串口'
+				el.title = '设备已断开,请重新选择串口'
+			} else if (!serialPort) {
+				el.textContent = '打开串口'
+				el.title = '请先选择串口'
+			} else if (serialOpen) {
+				el.textContent = '关闭串口'
+				el.title = '设备已连接'
+			} else {
+				el.textContent = '打开串口'
+				el.title = '已选择串口'
+			}
+			if (el === serialToggle) el.classList.remove('btn-sm')
+		})
 	}
 	// 发送到串口后切换为自动滚动并滚动到底部(主发送栏、快捷发送、代码脚本等所有发送方式共用)
 	function scrollToBottomAfterSend() {
