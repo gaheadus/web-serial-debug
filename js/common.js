@@ -7,6 +7,8 @@
 		if (ports.length > 0) {
 			serialPort = ports[0]
 			serialStatuChange(true)
+		} else {
+			updateLogTitle(false)
 		}
 	})
 	let reader
@@ -567,6 +569,7 @@
 			serialOpen = false
 			reader?.cancel()
 			serialToggle.innerHTML = '打开串口'
+			updateLogTitle(false)
 		}
 	}
 
@@ -588,6 +591,7 @@
 				serialOpen = true
 				serialClose = false
 				localStorage.setItem('serialOptions', JSON.stringify(SerialOptions))
+				updateLogTitle(true)
 				readData()
 			})
 			.catch((e) => {
@@ -646,6 +650,23 @@
 			tip = '<div class="alert alert-danger" role="alert">设备已断开</div>'
 		}
 		document.getElementById('serial-status').innerHTML = tip
+		updateLogTitle(statu)
+	}
+	//更新日志区域标题(串口名称或连接状态)
+	async function updateLogTitle(connected) {
+		const titleEl = document.getElementById('serial-log-title')
+		if (!connected || !serialPort) {
+			titleEl.textContent = '未连接'
+			return
+		}
+		try {
+			const info = await serialPort.getInfo()
+			// Chrome/Edge 可能返回 path 属性(非标准),如 "COM3"
+			const portName = info.path || info.portName || (info.usbVendorId && info.usbProductId ? `USB(0x${info.usbVendorId.toString(16)}:0x${info.usbProductId.toString(16)})` : null)
+			titleEl.textContent = portName ? '串口' + portName : '串口已连接'
+		} catch (e) {
+			titleEl.textContent = '串口已连接'
+		}
 	}
 	//串口数据收发
 	async function send() {
