@@ -450,13 +450,13 @@
 	resetLoopSend()
 	//恢复发送框显示状态
 	const serialSendArea = document.getElementById('serial-send-area')
-	const serialToggleSend = document.getElementById('serial-toggle-send')
+	const serialToggleSendBtn = document.querySelector('.toggle-button-send')
 	if (toolOptions.sendBoxVisible === true) {
 		serialSendArea.classList.add('show')
-		serialToggleSend.innerHTML = '<i class="bi bi-chevron-double-down"></i> 发送框'
+		serialToggleSendBtn.innerHTML = '<i class="bi bi-chevron-compact-up"></i>'
 	} else {
 		serialSendArea.classList.remove('show')
-		serialToggleSend.innerHTML = '<i class="bi bi-chevron-double-up"></i> 发送框'
+		serialToggleSendBtn.innerHTML = '<i class="bi bi-chevron-compact-down"></i>'
 	}
 
 	//实时修改选项
@@ -476,10 +476,10 @@
 		this.innerText = autoScroll ? '自动滚动' : '暂停滚动'
 		changeOption('autoScroll', autoScroll)
 	})
-	document.getElementById('serial-toggle-send').addEventListener('click', function (e) {
+	document.querySelector('.toggle-button-send').addEventListener('click', function (e) {
 		const sendBoxVisible = !serialSendArea.classList.toggle('show')
 		changeOption('sendBoxVisible', sendBoxVisible)
-		this.innerHTML = sendBoxVisible ? '<i class="bi bi-chevron-double-down"></i> 发送框' : '<i class="bi bi-chevron-double-up"></i> 发送框'
+		this.innerHTML = sendBoxVisible ? '<i class="bi bi-chevron-compact-up"></i>' : '<i class="bi bi-chevron-compact-down"></i>'
 	})
 	document.getElementById('serial-send-content').addEventListener('change', function (e) {
 		changeOption('sendContent', this.value)

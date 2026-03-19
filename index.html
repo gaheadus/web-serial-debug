@@ -170,7 +170,6 @@
                     </div>
 
                     <div class="btn-group">
-                        <button class="btn btn-sm btn-outline-secondary" id="serial-toggle-send" title="隐藏/显示发送框"><i class="bi bi-chevron-double-down"></i> 发送框</button>
                         <button class="btn btn-sm btn-outline-secondary" id="serial-auto-scroll">自动滚动</button>
                         <button class="btn btn-sm btn-outline-secondary" id="serial-clear">清空</button>
                         <button class="btn btn-sm btn-outline-secondary" id="serial-copy">复制</button>
@@ -179,7 +178,9 @@
                 </div>
             </div>
             <div id="serial-logs" class="flex-grow-1 border border-2 rounded mb-2"></div>
-            <div id="serial-send-area" class="collapse flex-shrink-0">
+            <div id="serial-send-wrapper" class="flex-shrink-0 d-flex flex-column">
+                <button class="toggle-button-send" title="隐藏/显示发送框"><i class="bi bi-chevron-compact-up"></i></button>
+                <div id="serial-send-area" class="collapse flex-shrink-0">
                 <textarea class="form-control" id="serial-send-content" style="resize: none;"
                     placeholder="在此输入要发送的内容,可以是字符串(如:你好,世界!),也可以是HEX(如:49544c4447)。Enter发送, Shift+Enter换行"></textarea>
                 <div
@@ -211,6 +212,7 @@
                         <button id="serial-send" class="btn btn-primary btn-sm px-3 ms-2"><i class="bi bi-send"></i>
                             发送</button>
                     </div>
+                </div>
                 </div>
             </div>
         </div>
