@@ -142,7 +142,7 @@
 		//快捷发送选中索引
 		quickSendIndex: 0,
 		//发送框是否显示
-		sendBoxVisible: true,
+		sendBoxVisible: false,
 	}
 
 	//生成快捷发送列表
@@ -451,7 +451,7 @@
 	//恢复发送框显示状态
 	const serialSendArea = document.getElementById('serial-send-area')
 	const serialToggleSend = document.getElementById('serial-toggle-send')
-	if (toolOptions.sendBoxVisible !== false) {
+	if (toolOptions.sendBoxVisible === true) {
 		serialSendArea.classList.add('show')
 		serialToggleSend.innerHTML = '<i class="bi bi-chevron-double-down"></i> 发送框'
 	} else {

@@ -30,6 +30,7 @@ body {
 #serial-tools {
 	position: relative;
 	font-size: 0.75rem;
+	min-width: 16px;
 }
 #serial-options .input-group,
 #serial-options .btn,
