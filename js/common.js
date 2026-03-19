@@ -3,13 +3,13 @@
 		alert('当前浏览器不支持串口操作,请更换Edge或Chrome浏览器')
 	}
 	let serialPort = null
+	let serialDisconnected = false
 	navigator.serial.getPorts().then((ports) => {
 		if (ports.length > 0) {
 			serialPort = ports[0]
-			serialStatuChange(true)
-		} else {
-			updateLogTitle(false)
+			serialDisconnected = false
 		}
+		updateSerialStatus()
 	})
 	let reader
 	//串口目前是打开状态
@@ -585,7 +585,8 @@
 			await navigator.serial.requestPort().then(async (port) => {
 				closeSerial()
 				serialPort = port
-				serialStatuChange(true)
+				serialDisconnected = false
+				updateSerialStatus()
 			})
 		} catch (e) {
 			console.error('获取串口权限出错' + e.toString())
@@ -598,8 +599,8 @@
 			serialOpen = false
 			reader?.cancel()
 			serialToggle.innerHTML = '打开串口'
-			updateLogTitle(false)
 		}
+		updateSerialStatus()
 	}
 
 	//打开串口
@@ -620,7 +621,7 @@
 				serialOpen = true
 				serialClose = false
 				localStorage.setItem('serialOptions', JSON.stringify(SerialOptions))
-				updateLogTitle(true)
+				updateSerialStatus()
 				readData()
 			})
 			.catch((e) => {
@@ -660,26 +661,35 @@
 
 	//串口事件监听
 	navigator.serial.addEventListener('connect', (e) => {
-		serialStatuChange(true)
 		serialPort = e.target
+		serialDisconnected = false
+		updateSerialStatus()
 		//未主动关闭连接的情况下,设备重插,自动重连
 		if (!serialClose) {
 			openSerial()
 		}
 	})
 	navigator.serial.addEventListener('disconnect', (e) => {
-		serialStatuChange(false)
+		serialDisconnected = true
+		serialPort = null
+		updateSerialStatus()
 		setTimeout(closeSerial, 500)
 	})
-	function serialStatuChange(statu) {
+	function updateSerialStatus() {
+		const el = document.getElementById('serial-status')
+		if (!el) return
 		let tip
-		if (statu) {
+		if (serialDisconnected) {
+			tip = '<div class="alert alert-danger" role="alert">设备已断开</div>'
+		} else if (!serialPort) {
+			tip = '<div class="alert alert-info" role="alert">未选择串口</div>'
+		} else if (serialOpen) {
 			tip = '<div class="alert alert-success" role="alert">设备已连接</div>'
 		} else {
-			tip = '<div class="alert alert-danger" role="alert">设备已断开</div>'
+			tip = '<div class="alert alert-warning" role="alert">已选择串口</div>'
 		}
-		document.getElementById('serial-status').innerHTML = tip
-		updateLogTitle(statu)
+		el.innerHTML = tip
+		updateLogTitle(serialOpen)
 	}
 	//更新日志区域标题(串口名称或连接状态)
 	async function updateLogTitle(connected) {
