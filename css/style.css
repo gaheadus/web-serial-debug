@@ -24,8 +24,8 @@ body {
 	word-break: break-all;
 }
 #serial-logs.ansi {
-	background-color: #000;
-	color: #fff;
+	background-color: transparent; /* 取消黑色背景，保持页面主题 */
+	color: inherit; /* 文字颜色由页面主题控制，ansi 颜色保留 */
 }
 #serial-options,
 #serial-tools {
