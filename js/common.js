@@ -849,6 +849,8 @@
 		}
 		if (toolOptions.logType.includes('text')) {
 			let dataText = textdecoder.decode(Uint8Array.from(data))
+			// 连续2行或更多空行，合并为1行
+			dataText = dataText.replace(/\r\n/g, '\n').replace(/\n{2,}/g, '\n')
 			if (toolOptions.logType.includes('&')) {
 				newmsg += 'TEXT:'
 			}
@@ -856,7 +858,9 @@
 			newmsg += HTMLEncode(dataText)
 		}
 		if (toolOptions.logType.includes('ansi')) {
-			const dataText = textdecoder.decode(Uint8Array.from(data))
+			let dataText = textdecoder.decode(Uint8Array.from(data))
+			// 连续2行或更多空行，合并为1行
+			dataText = dataText.replace(/\r\n/g, '\n').replace(/\n{2,}/g, '\n')
 			const html = ansi_up.ansi_to_html(dataText)
 			newmsg += html
 		}
