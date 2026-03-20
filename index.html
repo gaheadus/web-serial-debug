@@ -149,7 +149,7 @@
                         <span class="input-group-text">分包超时</span>
                         <input type="number" id="serial-timer-out" class="form-control" placeholder="0不分包" value="50" />
                     </div>
-                    <div class="input-group input-group-sm">
+                    <div class="input-group input-group-sm mb-2">
                         <span class="input-group-text">日志类型</span>
                         <select class="form-select" id="serial-log-type">
                             <Option value="hex&text">Hex和Text</Option>
@@ -157,6 +157,10 @@
                             <Option value="text">Text</Option>
                             <Option value="ansi">彩色Ansi</Option>
                         </select>
+                    </div>
+                    <div class="form-check">
+                        <input class="form-check-input" type="checkbox" id="serial-compact-log">
+                        <label class="form-check-label" for="serial-compact-log">紧凑显示(合并多余空行)</label>
                     </div>
                 </div>
 
