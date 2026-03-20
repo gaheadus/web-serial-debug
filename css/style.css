@@ -27,6 +27,12 @@ body {
 	background-color: transparent; /* 取消黑色背景，保持页面主题 */
 	color: inherit; /* 文字颜色由页面主题控制，ansi 颜色保留 */
 }
+.quick-item.drag-over {
+	background-color: rgba(0, 123, 255, 0.15);
+}
+.quick-item.dragging {
+	opacity: 0.5;
+}
 #serial-options,
 #serial-tools {
 	position: relative;

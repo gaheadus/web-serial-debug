@@ -216,17 +216,69 @@
 	}
 
 	const quickSendContent = document.getElementById('serial-quick-send-content')
+
+	function renderQuickSendContent() {
+		quickSendContent.innerHTML = ''
+		currQuickSend.list.forEach((item) => {
+			quickSendContent.innerHTML += getQuickItemHtml(item)
+		})
+	}
+
+	function swapQuickSendItem(sourceIndex, targetIndex) {
+		if (sourceIndex < 0 || targetIndex < 0 || sourceIndex === targetIndex) return
+		const item = currQuickSend.list[sourceIndex]
+		currQuickSend.list.splice(sourceIndex, 1)
+		currQuickSend.list.splice(targetIndex, 0, item)
+		renderQuickSendContent()
+		saveQuickList()
+	}
+
+	let dragSourceIndex = -1
+
+	quickSendContent.addEventListener('dragstart', (e) => {
+		const itemEl = e.target.closest('.quick-item')
+		if (!itemEl) return
+		dragSourceIndex = Array.from(quickSendContent.children).indexOf(itemEl)
+		e.dataTransfer.effectAllowed = 'move'
+		e.dataTransfer.setData('text/plain', dragSourceIndex.toString())
+		itemEl.classList.add('dragging')
+	})
+
+	quickSendContent.addEventListener('dragover', (e) => {
+		e.preventDefault()
+		const itemEl = e.target.closest('.quick-item')
+		if (!itemEl) return
+		itemEl.classList.add('drag-over')
+	})
+
+	quickSendContent.addEventListener('dragleave', (e) => {
+		const itemEl = e.target.closest('.quick-item')
+		if (!itemEl) return
+		itemEl.classList.remove('drag-over')
+	})
+
+	quickSendContent.addEventListener('drop', (e) => {
+		e.preventDefault()
+		const itemEl = e.target.closest('.quick-item')
+		if (!itemEl) return
+		itemEl.classList.remove('drag-over')
+		const targetIndex = Array.from(quickSendContent.children).indexOf(itemEl)
+		const sourceIndex = parseInt(e.dataTransfer.getData('text/plain'), 10)
+		swapQuickSendItem(sourceIndex, targetIndex)
+	})
+
+	quickSendContent.addEventListener('dragend', (e) => {
+		const itemEl = e.target.closest('.quick-item')
+		if (itemEl) itemEl.classList.remove('dragging')
+	})
+
 	//快捷发送列表更换选项
 	quickSend.addEventListener('change', (e) => {
 		let index = e.target.value
 		if (index != -1) {
 			changeOption('quickSendIndex', index)
 			currQuickSend = quickSendList[index]
-			//
-			quickSendContent.innerHTML = ''
-			currQuickSend.list.forEach((item) => {
-				quickSendContent.innerHTML += getQuickItemHtml(item)
-			})
+			renderQuickSendContent()
 		}
 	})
 	//添加快捷发送
@@ -237,11 +289,11 @@
 			hex: false,
 		}
 		currQuickSend.list.push(item)
-		quickSendContent.innerHTML += getQuickItemHtml(item)
+		renderQuickSendContent()
 		saveQuickList()
 	})
 	function getQuickItemHtml(item) {
-		return `<div class="d-flex p-1 border-bottom quick-item">
+		return `<div class="d-flex p-1 border-bottom quick-item" draggable="true">
 			<button class="flex-shrink-0 me-1 align-self-center btn btn-secondary btn-sm quick-send" title="${item.name}">${item.name}</button>
 			<input class="form-control form-control-sm me-1" placeholder="要发送的内容,双击改名" value="${item.content}">
 			<input class="form-check-input flex-shrink-0 align-self-center me-1" type="checkbox" ${item.hex ? 'checked' : ''}>
