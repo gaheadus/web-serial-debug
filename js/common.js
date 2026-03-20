@@ -127,8 +127,6 @@
 		showTime: true,
 		//日志类型
 		logType: 'hex&text',
-		//紧凑显示(合并多余空行)
-		compactLog: false,
 		//分包合并时间
 		timeOut: 50,
 		//末尾加回车换行
@@ -441,7 +439,6 @@
 	}
 	document.getElementById('serial-timer-out').value = toolOptions.timeOut
 	document.getElementById('serial-log-type').value = toolOptions.logType
-	document.getElementById('serial-compact-log').checked = toolOptions.compactLog
 	document.getElementById('serial-auto-scroll').innerText = toolOptions.autoScroll ? '自动滚动' : '暂停滚动'
 	document.getElementById('serial-add-crlf').checked = toolOptions.addCRLF
 	document.getElementById('serial-hex-send').checked = toolOptions.hexSend
@@ -473,12 +470,6 @@
 		} else {
 			serialLogs.classList.remove('ansi')
 		}
-	})
-	document.getElementById('serial-compact-log').addEventListener('change', (e) => {
-		changeOption('compactLog', e.target.checked)
-		compactLogPending = ''
-		compactLogAccumulated = ''
-		compactLogHexAccumulated = []
 	})
 	document.getElementById('serial-auto-scroll').addEventListener('click', function (e) {
 		let autoScroll = this.innerText != '自动滚动'
@@ -535,9 +526,6 @@
 	//清空
 	document.getElementById('serial-clear').addEventListener('click', (e) => {
 		serialLogs.innerHTML = ''
-		compactLogPending = ''
-		compactLogAccumulated = ''
-		compactLogHexAccumulated = []
 	})
 	//复制
 	document.getElementById('serial-copy').addEventListener('click', (e) => {
@@ -839,16 +827,6 @@
 		}, toolOptions.timeOut)
 	}
 	var ansi_up = new AnsiUp()
-	// 紧凑显示: 删除空行及仅含空白行(^\s*$)
-	function compactEmptyLines(str) {
-		return str.split(/\r?\n/).filter((line) => !/^\s*$/.test(line)).join('\n')
-	}
-	// 紧凑模式下,缓存纯空白包
-	let compactLogPending = ''
-	// 紧凑模式下,累积的文本内容
-	let compactLogAccumulated = ''
-	// 紧凑模式下,累积的hex数据
-	let compactLogHexAccumulated = []
 	//添加日志
 	function addLog(data, isReceive = true) {
 		let classname = 'text-primary'
@@ -857,54 +835,10 @@
 			classname = 'text-success'
 			form = '←'
 		}
-		let dataText = ''
-		if (toolOptions.logType.includes('text') || toolOptions.logType.includes('ansi')) {
-			dataText = textdecoder.decode(Uint8Array.from(data))
-		}
-		const textOrAnsi = toolOptions.logType.includes('text') || toolOptions.logType.includes('ansi')
-		// 紧凑模式: 纯空白包缓存; 有内容时追加到最后一div并删除空行
-		if (toolOptions.compactLog && textOrAnsi) {
-			const isOnlyWhitespace = /^\s*$/.test(dataText)
-			if (isOnlyWhitespace) {
-				compactLogPending += dataText
-				if (toolOptions.logType.includes('hex')) compactLogHexAccumulated.push(...data)
-				return
-			}
-			compactLogAccumulated += compactLogPending + dataText
-			compactLogPending = ''
-			if (toolOptions.logType.includes('hex')) compactLogHexAccumulated.push(...data)
-			dataText = compactEmptyLines(compactLogAccumulated)
-			compactLogAccumulated = dataText
-			const lastDiv = serialLogs.lastElementChild
-			if (lastDiv && !lastDiv.querySelector('.text-danger')) {
-				let newmsg = ''
-				if (toolOptions.logType.includes('hex')) {
-					const dataHex = compactLogHexAccumulated.map((d) =>
-						('0' + d.toString(16).toLocaleUpperCase()).slice(-2)
-					)
-					newmsg += (toolOptions.logType.includes('&') ? 'HEX:' : '') + dataHex.join(' ') + '<br/>'
-				}
-				if (toolOptions.logType.includes('text')) {
-					newmsg += (toolOptions.logType.includes('&') ? 'TEXT:' : '') + HTMLEncode(dataText)
-				}
-				if (toolOptions.logType.includes('ansi')) {
-					newmsg += ansi_up.ansi_to_html(dataText)
-				}
-				const span = lastDiv.querySelector('span')
-				lastDiv.innerHTML = (span ? span.outerHTML : '') + '<br>' + newmsg
-				if (toolOptions.autoScroll) {
-					serialLogs.scrollTop = serialLogs.scrollHeight - serialLogs.clientHeight
-				}
-				return
-			}
-			// 需新建div时(如首包或上一条为系统消息),dataText已是累积并紧凑后的内容
-		}
 		newmsg = ''
 		if (toolOptions.logType.includes('hex')) {
-			const hexSource = compactLogHexAccumulated.length ? compactLogHexAccumulated : data
-			if (compactLogHexAccumulated.length) compactLogHexAccumulated = []
 			let dataHex = []
-			for (const d of hexSource) {
+			for (const d of data) {
 				//转16进制并补0
 				dataHex.push(('0' + d.toString(16).toLocaleUpperCase()).slice(-2))
 			}
@@ -914,6 +848,7 @@
 			newmsg += dataHex.join(' ') + '<br/>'
 		}
 		if (toolOptions.logType.includes('text')) {
+			let dataText = textdecoder.decode(Uint8Array.from(data))
 			if (toolOptions.logType.includes('&')) {
 				newmsg += 'TEXT:'
 			}
@@ -921,6 +856,7 @@
 			newmsg += HTMLEncode(dataText)
 		}
 		if (toolOptions.logType.includes('ansi')) {
+			const dataText = textdecoder.decode(Uint8Array.from(data))
 			const html = ansi_up.ansi_to_html(dataText)
 			newmsg += html
 		}
