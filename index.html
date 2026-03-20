@@ -191,11 +191,12 @@
         <div id="log-main" class="flex-fill px-md-2">
             <div id="log-toolbar"
                 class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center py-0 mb-1 flex-shrink-0">
-                <div class="btn-toolbar">
+                <div class="btn-toolbar d-flex align-items-center">
                     <div class="btn-group">
                         <button type="button" class="btn btn-sm" id="serial-log-open-close">打开串口</button>
                         <button type="button" class="btn btn-sm btn-outline-secondary" id="serial-log-select-port">选择串口</button>
                     </div>
+                    <input id="serial-log-filter" class="form-control form-control-sm ms-2" style="width: 220px;" placeholder="日志过滤(空白不过滤)" />
                 </div>
                 <div class="btn-toolbar">
                     <div class="btn-group">

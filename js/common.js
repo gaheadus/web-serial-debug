@@ -579,6 +579,13 @@
 	document.getElementById('serial-clear').addEventListener('click', (e) => {
 		serialLogs.innerHTML = ''
 	})
+	//日志过滤
+	const serialLogFilter = document.getElementById('serial-log-filter')
+	if (serialLogFilter) {
+		serialLogFilter.addEventListener('input', (e) => {
+			applyLogFilter()
+		})
+	}
 	//复制
 	document.getElementById('serial-copy').addEventListener('click', (e) => {
 		let text = serialLogs.innerText
@@ -887,7 +894,8 @@
 			classname = 'text-success'
 			form = '←'
 		}
-		newmsg = ''
+		let newmsg = ''
+		let logText = ''
 		if (toolOptions.logType.includes('hex')) {
 			let dataHex = []
 			for (const d of data) {
@@ -896,8 +904,11 @@
 			}
 			if (toolOptions.logType.includes('&')) {
 				newmsg += 'HEX:'
+				logText += 'HEX:'
 			}
-			newmsg += dataHex.join(' ') + '<br/>'
+			const hexText = dataHex.join(' ')
+			newmsg += hexText + '<br/>'
+			logText += hexText + ' '
 		}
 		if (toolOptions.logType.includes('text')) {
 			let dataText = textdecoder.decode(Uint8Array.from(data))
@@ -905,9 +916,11 @@
 			dataText = dataText.replace(/\r\n/g, '\n').replace(/\n{2,}/g, '\n')
 			if (toolOptions.logType.includes('&')) {
 				newmsg += 'TEXT:'
+				logText += 'TEXT:'
 			}
 			//转义HTML标签,防止内容被当作标签渲染
 			newmsg += HTMLEncode(dataText)
+			logText += dataText + ' '
 		}
 		if (toolOptions.logType.includes('ansi')) {
 			let dataText = textdecoder.decode(Uint8Array.from(data))
@@ -915,16 +928,36 @@
 			dataText = dataText.replace(/\r\n/g, '\n').replace(/\n{2,}/g, '\n')
 			const html = ansi_up.ansi_to_html(dataText)
 			newmsg += html
+			logText += dataText + ' '
 		}
 		let time = toolOptions.showTime ? formatDate(new Date()) + '&nbsp;' : ''
 		const template = '<div><span class="' + classname + '">' + time + form + '</span><br>' + newmsg + '</div>'
 		let tempNode = document.createElement('div')
 		tempNode.innerHTML = template
+		tempNode.setAttribute('data-log-text', logText.trim().toLowerCase())
 		serialLogs.append(tempNode)
+		const filterInput = document.getElementById('serial-log-filter')
+		const filterValue = filterInput ? filterInput.value.trim().toLowerCase() : ''
+		// 只有在有非空过滤条件时才遍历过滤，空白直接不做循环判断
+		if (filterValue) {
+			applyLogFilter(filterValue)
+		}
 		if (toolOptions.autoScroll) {
 			serialLogs.scrollTop = serialLogs.scrollHeight - serialLogs.clientHeight
 		}
 	}
+
+	function applyLogFilter(filterValue = '') {
+		filterValue = filterValue.trim().toLowerCase()
+		if (!filterValue) {
+			return
+		}
+		Array.from(serialLogs.children).forEach((item) => {
+			const text = (item.getAttribute('data-log-text') || '').toLowerCase()
+			item.style.display = text.includes(filterValue) ? '' : 'none'
+		})
+	}
+
 	//HTML转义
 	function HTMLEncode(html) {
 		var temp = document.createElement('div')
