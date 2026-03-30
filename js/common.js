@@ -797,13 +797,19 @@
 
 	//串口数据收发
 	async function send() {
-		let content = document.getElementById('serial-send-content').value
+		const sendContentEl = document.getElementById('serial-send-content')
+		let content = sendContentEl.value
+		let sent = false
 		if (!content) {
-			await sendText('\r\n', true)
+			sent = await sendText('\r\n', true)
 		} else if (toolOptions.hexSend) {
-			await sendHex(content)
+			sent = await sendHex(content)
 		} else {
-			await sendText(content)
+			sent = await sendText(content)
+		}
+		if (sent) {
+			sendContentEl.value = ''
+			changeOption('sendContent', '')
 		}
 	}
 
@@ -815,9 +821,10 @@
 			for (let i = 0; i < value.length; i = i + 2) {
 				data.push(parseInt(value.substring(i, i + 2), 16))
 			}
-			await writeData(Uint8Array.from(data))
+			return writeData(Uint8Array.from(data))
 		} else {
 			addLogErr('HEX格式错误:' + hex)
+			return false
 		}
 	}
 
@@ -831,7 +838,7 @@
 	async function writeData(data, skipAddCRLF = false) {
 		if (!serialPort || !serialPort.writable) {
 			addLogErr('请先打开串口再发送数据')
-			return
+			return false
 		}
 		const writer = serialPort.writable.getWriter()
 		if (!skipAddCRLF && toolOptions.addCRLF) {
@@ -841,6 +848,7 @@
 		writer.releaseLock()
 		addLog(data, false)
 		scrollToBottomAfterSend()
+		return true
 	}
 
 	//读串口数据
