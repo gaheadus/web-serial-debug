@@ -139,11 +139,16 @@
 		loopSendTime: 1000,
 		//输入的发送内容
 		sendContent: '',
+		//最近发送历史
+		sendHistory: [],
 		//快捷发送选中索引
 		quickSendIndex: 0,
 		//发送框是否显示
 		sendBoxVisible: false,
 	}
+	const sendHistoryLimit = 10
+	let sendHistoryIndex = -1
+	let sendHistoryDraft = ''
 
 	//生成快捷发送列表
 	let quickSend = document.getElementById('serial-quick-send')
@@ -489,6 +494,11 @@
 	if (options) {
 		toolOptions = JSON.parse(options)
 	}
+	if (!Array.isArray(toolOptions.sendHistory)) {
+		toolOptions.sendHistory = []
+	} else if (toolOptions.sendHistory.length > sendHistoryLimit) {
+		toolOptions.sendHistory = toolOptions.sendHistory.slice(-sendHistoryLimit)
+	}
 	document.getElementById('serial-timer-out').value = toolOptions.timeOut
 	document.getElementById('serial-log-type').value = toolOptions.logType
 	document.getElementById('serial-auto-scroll').innerText = toolOptions.autoScroll ? '自动滚动' : '暂停滚动'
@@ -535,6 +545,9 @@
 	})
 	document.getElementById('serial-send-content').addEventListener('change', function (e) {
 		changeOption('sendContent', this.value)
+	})
+	document.getElementById('serial-send-content').addEventListener('input', function (e) {
+		resetSendHistoryNavigation()
 	})
 	document.getElementById('serial-add-crlf').addEventListener('change', function (e) {
 		changeOption('addCRLF', this.checked)
@@ -612,6 +625,10 @@
 			} else {
 				e.preventDefault()
 				send()
+			}
+		} else if (e.key === 'ArrowUp' || e.key === 'ArrowDown') {
+			if (canNavigateSendHistory(e.target, e.key) && navigateSendHistory(e.key === 'ArrowUp' ? -1 : 1)) {
+				e.preventDefault()
 			}
 		}
 	})
@@ -718,6 +735,74 @@
 		localStorage.setItem('toolOptions', JSON.stringify(toolOptions))
 	}
 
+	function resetSendHistoryNavigation() {
+		sendHistoryIndex = -1
+		sendHistoryDraft = ''
+	}
+
+	function updateSendContent(value) {
+		const sendContentEl = document.getElementById('serial-send-content')
+		sendContentEl.value = value
+		changeOption('sendContent', value)
+		sendContentEl.focus()
+		sendContentEl.setSelectionRange(value.length, value.length)
+	}
+
+	function rememberSendHistory(content) {
+		if (!content) {
+			return
+		}
+		const history = toolOptions.sendHistory.filter((item) => item !== content)
+		history.push(content)
+		changeOption('sendHistory', history.slice(-sendHistoryLimit))
+		resetSendHistoryNavigation()
+	}
+
+	function canNavigateSendHistory(el, key) {
+		if (el.selectionStart !== el.selectionEnd) {
+			return false
+		}
+		if (key === 'ArrowUp') {
+			return !el.value.slice(0, el.selectionStart).includes('\n')
+		}
+		if (key === 'ArrowDown') {
+			return !el.value.slice(el.selectionEnd).includes('\n')
+		}
+		return false
+	}
+
+	function navigateSendHistory(direction) {
+		const history = toolOptions.sendHistory
+		const sendContentEl = document.getElementById('serial-send-content')
+		if (!history.length) {
+			return false
+		}
+		if (direction < 0) {
+			if (sendHistoryIndex === -1) {
+				sendHistoryDraft = sendContentEl.value
+				sendHistoryIndex = history.length - 1
+			} else if (sendHistoryIndex > 0) {
+				sendHistoryIndex--
+			} else {
+				return false
+			}
+			updateSendContent(history[sendHistoryIndex])
+			return true
+		}
+		if (sendHistoryIndex === -1) {
+			return false
+		}
+		if (sendHistoryIndex < history.length - 1) {
+			sendHistoryIndex++
+			updateSendContent(history[sendHistoryIndex])
+		} else {
+			sendHistoryIndex = -1
+			updateSendContent(sendHistoryDraft)
+			sendHistoryDraft = ''
+		}
+		return true
+	}
+
 	//串口事件监听
 	navigator.serial.addEventListener('connect', (e) => {
 		serialPort = e.target
@@ -808,6 +893,7 @@
 			sent = await sendText(content)
 		}
 		if (sent) {
+			rememberSendHistory(content)
 			sendContentEl.value = ''
 			changeOption('sendContent', '')
 		}
